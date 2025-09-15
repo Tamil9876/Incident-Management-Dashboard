@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+  <h2 class="text-center mb-4">📊 Dashboard</h2>
+
+  <!-- Summary Cards -->
+  <div class="row text-center mb-4">
+    <div class="col-md-3">
+      <div class="card bg-dark text-white shadow">
+        <div class="card-body">
+          <h4>{{ total_incidents }}</h4>
+          <p>Total Incidents</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-danger text-white shadow">
+        <div class="card-body">
+          <h4>{{ high_risk }}</h4>
+          <p>High Risk</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-warning text-dark shadow">
+        <div class="card-body">
+          <h4>{{ medium_risk }}</h4>
+          <p>Medium Risk</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-success text-white shadow">
+        <div class="card-body">
+          <h4>{{ low_risk }}</h4>
+          <p>Low Risk</p>
+        </div>
+      </div>
+    </div>
+  </div>
+    <div class="text-end mb-3">
+  <a href="{% url 'dashboard_pdf' %}" class="btn btn-danger">
+    📥 Download Dashboard Report (PDF)
+  </a>
+</div>
+
+
+  <!-- Charts -->
+  <div class="row mt-4">
+    <div class="col-md-6">
+      <canvas id="failureChart"></canvas>
+    </div>
+    <div class="col-md-6">
+      <canvas id="riskChart"></canvas>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <canvas id="trendChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Failures Pie
+  new Chart(document.getElementById('failureChart'), {
+    type: 'pie',
+    data: {
+      labels: {{ failure_labels|safe }},
+      datasets: [{ data: {{ failure_counts|safe }}, backgroundColor: ["#ff6384","#36a2eb","#ffce56","#4bc0c0"] }]
+    }
+  });
+
+  // Risk Bar
+  new Chart(document.getElementById('riskChart'), {
+    type: 'bar',
+    data: {
+      labels: {{ risk_labels|safe }},
+      datasets: [{ label: "Incidents", data: {{ risk_counts|safe }}, backgroundColor: "#36a2eb" }]
+    }
+  });
+
+  // Trend Line
+  new Chart(document.getElementById('trendChart'), {
+    type: 'line',
+    data: {
+      labels: {{ months|safe }},
+      datasets: [{ label: "Incidents per Month", data: {{ counts|safe }}, borderColor: "#ff6384", fill: false }]
+    }
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card shadow">
+  <div class="card-header bg-primary text-white">
+    <h4>Incident Details</h4>
+  </div>
+  <div class="card-body">
+    <p><strong>Date:</strong> {{ incident.date }}</p>
+    <p><strong>Last Maintenance:</strong> {{ incident.last_maintenance_date }}</p>
+    <p><strong>Pressure:</strong> {{ incident.pressure }}</p>
+    <p><strong>Temperature:</strong> {{ incident.temperature }}</p>
+    <p><strong>Failure:</strong> {{ incident.failure }}</p>
+    <p><strong>Risk:</strong> {{ incident.risk }}</p>
+    <p><strong>Actions:</strong> {{ incident.actions }}</p>
+    <p><em>Created: {{ incident.created_at }} | Updated: {{ incident.updated_at }}</em></p>
+  </div>
+  <div class="card-footer">
+    <a href="{% url 'incident_list' %}" class="btn btn-secondary">⬅ Back</a>
+    {% if user.groups.first.name != "Viewer" %}
+      <a href="{% url 'edit_incident' incident.id %}" class="btn btn-warning">✏ Edit</a>
+    {% endif %}
+    {% if user.groups.first.name == "Admin" %}
+      <a href="{% url 'delete_incident' incident.id %}" class="btn btn-danger">🗑 Delete</a>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
